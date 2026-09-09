@@ -246,7 +246,7 @@ function showSearch(query) {
   box.innerHTML = results.length
     ? results.slice(0, 4).map(anime => `<button class="result" type="button" data-id="${esc(anime.id)}">
         ${anime.poster_url ? `<img src="${esc(anime.poster_url)}" alt="">` : ''}
-        <span class="resultInfo"><span class="resultTitle">${esc(anime.title)}</span><span class="resultMeta">${anime.content_type === 'movie' ? 'Movie' : 'Series'}</span></span>
+        <span class="resultInfo"><span class="resultTitle">${esc(anime.title)}</span></span>
       </button>`).join('')
     : '<div class="resultEmpty">No results found</div>';
   box.classList.remove('hidden');
@@ -316,8 +316,6 @@ async function loadAnime(options = {}) {
 
       const latestByAnime = {};
       if (publishedIds.size) {
-        // Episodes are read newest-first in pages and we stop as soon as every
-        // published series that has episodes has its newest row.
         for (let from = 0; ; from += 500) {
           const result = await withRetry(
             () => db.from('episodes')
@@ -347,8 +345,6 @@ async function loadAnime(options = {}) {
       renderHistory();
       lastSuccessfulLoadAt = Date.now();
 
-      // Keep an already-open anime page usable after an admin update, but do
-      // not reopen routes or destroy the currently selected episode here.
       if (!hadData) openRouteFromHash();
       else if (location.hash.startsWith('#anime-') && !state.current) openRouteFromHash();
 
