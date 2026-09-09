@@ -1,0 +1,1 @@
+(function(){const app=window.AnipastaApp;if(!app)return;const openAboutPage=()=>{window.location.href='about.html';};app.openAbout=openAboutPage;window.openAbout=openAboutPage;})();
