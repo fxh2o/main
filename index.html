@@ -5,25 +5,42 @@
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
   <title>AniPasta - Anime Streaming</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
   <link rel="stylesheet" href="styles.css">
   <link rel="stylesheet" href="legal.css">
   <link rel="stylesheet" href="site-enhancements.css">
+  <style>
+    .header .searchWrap{width:auto;max-width:none;margin:0 0 0 auto;position:relative;display:flex;align-items:center}
+    .headerSearchToggle{width:42px;height:42px;display:grid;place-items:center;border:1px solid var(--border-2);border-radius:10px;background:var(--surface-2);color:var(--muted);flex:0 0 auto}
+    .headerSearchToggle:hover{border-color:var(--accent);background:var(--surface-3);color:var(--text)}
+    .headerSearchToggle svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+    .header .searchWrap .searchBox{display:none;margin-left:8px;width:min(520px,52vw)}
+    .header .searchWrap.open .searchBox{display:block}
+    .header .searchWrap .search{height:42px}
+    @media(max-width:700px){.header{gap:8px}.header .searchWrap .searchBox{width:min(430px,calc(100vw - 120px))}.headerSearchToggle{width:40px;height:40px}}
+  </style>
 </head>
 <body>
   <header class="header">
     <button id="homeButton" class="logo" type="button" aria-label="AniPasta home"><span id="typingLogoText" class="typingLogoText"></span></button>
-    <div class="searchWrap">
-      <input id="search" class="search" placeholder="Search anime..." autocomplete="off">
-      <div id="searchResults" class="searchResults hidden"></div>
+    <div class="searchWrap" id="headerSearchWrap">
+      <button id="headerSearchButton" class="headerSearchToggle" type="button" aria-label="Search" title="Search">
+        <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="6.5"></circle><path d="m16 16 5 5"></path></svg>
+      </button>
+      <div class="searchBox">
+        <input id="search" class="search" placeholder="Search anime..." autocomplete="off">
+        <div id="searchResults" class="searchResults hidden"></div>
+      </div>
     </div>
   </header>
+
   <main id="homePage" class="page">
     <section id="historySection" class="historySection hidden">
       <div class="sectionHead historyHead"><div><h2>Watch History</h2></div><div class="historyActions"><button id="viewAllHistory" class="viewAllBtn hidden" type="button">View All</button><button id="clearHistory" class="clearHistoryBtn" type="button">Clear History</button></div></div>
       <div id="historyGrid" class="historyGrid"></div>
     </section>
-    <div class="sectionHead"><h2 id="heading">Latest Releases</h2></div><div id="grid" class="grid"><div class="empty">Loading anime...</div></div>
+    <div class="sectionHead"><h2 id="heading">Latest Releases</h2></div>
+    <div id="grid" class="grid"><div class="empty">Loading anime...</div></div>
   </main>
   <main id="searchPage" class="page hidden"><div class="sectionHead"><h2 id="searchPageTitle">Search Results</h2></div><div id="searchGrid" class="grid"></div></main>
   <main id="historyPage" class="page hidden"><div class="sectionHead"><h2>Watch History</h2><button id="clearHistoryPage" class="clearHistoryBtn" type="button">Clear History</button></div><div id="allHistoryGrid" class="grid"></div></main>
@@ -31,9 +48,11 @@
     <div class="watchHead"><div class="miniPoster"><img id="miniPoster" alt=""></div><div class="titleBlock"><h1 id="animeTitle"></h1><div id="watchCounts"></div></div></div>
     <div class="watchGrid"><section class="videoColumn"><div class="videoFrame"><div id="player" class="placeholder">Select an episode to start watching</div></div><div id="videoControls" class="videoControls"><button id="prevBtn" class="epNavBtn" type="button" disabled>&larr; Previous</button><div id="now" class="now"></div><button id="nextBtn" class="epNavBtn" type="button" disabled>Next &rarr;</button></div></section><aside class="episodesPanel"><div class="epHead"><strong id="sideTitle">Episodes</strong></div><div id="seasonNav" class="seasonNav"><button id="seasonPrev" class="navArrow" type="button" aria-label="Previous season">&lt;</button><div id="seasons" class="seasons"></div><button id="seasonNext" class="navArrow" type="button" aria-label="Next season">&gt;</button></div><div id="episodeNav" class="episodeNav"><button id="episodePrev" class="navArrow" type="button" aria-label="Previous page" disabled></button><div id="episodes" class="episodes"></div><button id="episodeNext" class="navArrow" type="button" aria-label="Next page" disabled></button></div></aside></div>
   </main>
+
   <div id="anipastaLoader" aria-hidden="true"><div class="loaderBox"><div class="loaderRing"></div><div class="loaderText">Loading...</div></div></div>
-  <div id="anipastaTelegramPopup" aria-hidden="true"><div class="anipastaTgBox" role="dialog" aria-modal="true" aria-labelledby="anipastaTgTitle"><button class="anipastaTgClose" type="button" aria-label="Close">&times;</button><div class="anipastaTgIcon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M21.7 3.3 18.6 20c-.2 1.2-.9 1.5-1.8.9l-5-3.7-2.4 2.3c-.3.3-.5.5-1 .5l.4-5.1 9.3-8.4c.4-.4-.1-.6-.6-.2L6 13.7 1.1 12.2c-1.1-.3-1.1-1 .2-1.5L20.4 3c.9-.3 1.7.2 1.3.3Z"/></svg></div><div id="anipastaTgTitle" class="anipastaTgTitle">Join AniPasta on Telegram</div><p class="anipastaTgText">Get the latest anime updates, new releases and announcements in our channel.</p><a class="anipastaTgJoin" href="https://t.me/Anipasta" target="_blank" rel="noopener noreferrer">Join Channel</a></div></div>
+  <div id="anipastaTelegramPopup" aria-hidden="true"><div class="anipastaTgBox" role="dialog" aria-modal="true" aria-labelledby="anipastaTgTitle"><button class="anipastaTgClose" type="button" aria-label="Close">&times;</button><div class="anipastaTgIcon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M21.7 3.3 18.6 20c-.2 1.2-.9 1.5-1.8.9l-5-3.7-2.4 2.3c-.3.3-.5.5-1 .5L9.5 17l9.3-8.4c.4-.4-.1-.6-.6-.2L6 13.7 1.1 12.2c-1.1-.3-1.1-1 .2-1.5L20.4 3c.9-.3 1.7.2 1.3.3Z"/></svg></div><div id="anipastaTgTitle" class="anipastaTgTitle">Join AniPasta on Telegram</div><p class="anipastaTgText">Get the latest anime updates, new releases and announcements in our channel.</p><a class="anipastaTgJoin" href="https://t.me/Anipasta" target="_blank" rel="noopener noreferrer">Join Channel</a></div></div>
   <footer class="siteFooter"><nav class="footerLinks" aria-label="Legal and information"><a href="about.html">About</a><a href="disclaimer.html">Disclaimer</a><a href="privacy-policy.html">Privacy Policy</a><a href="terms.html">Terms</a><a href="dmca.html">DMCA</a><a href="credits.html">Credits</a><a href="contact-us.html">Contact Us</a></nav><div class="footerCopyright">Copyright © 2026 AniPasta. All Rights Reserved.</div><div class="footerNotice">Anime titles, logos, characters, artwork and related trademarks are the property of their respective owners.</div><div class="footerDomain">https://anipasta.top</div></footer>
+
   <script src="supabase-config.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="performance.js"></script>
@@ -41,7 +60,29 @@
   <script src="notifications.js"></script>
   <script src="download.js"></script>
   <script>
-    (()=>{const el=document.getElementById('typingLogoText');if(!el)return;const text='ANIPASTA.TOP';let i=0,d=false,t;const render=v=>{const p=v.indexOf('.');el.innerHTML=`<span class="typingBrandYellow" style="color:#f5c518 !important">${p<0?v:v.slice(0,p)}</span><span class="typingBrandWhite" style="color:#fff !important">${p<0?'':v.slice(p)}</span>`};const tick=()=>{if(!d){i++;render(text.slice(0,i));if(i>=text.length)d=true;t=setTimeout(tick,d?1700:105)}else{i--;render(text.slice(0,i));if(i<=0)d=false;t=setTimeout(tick,d?65:300)}};t=setTimeout(tick,250);window.addEventListener('beforeunload',()=>clearTimeout(t),{once:true})})();
+    (()=>{
+      const searchWrap=document.getElementById('headerSearchWrap');
+      const searchButton=document.getElementById('headerSearchButton');
+      const searchInput=document.getElementById('search');
+      if(searchWrap&&searchButton){
+        searchButton.addEventListener('click',e=>{
+          e.preventDefault();
+          e.stopPropagation();
+          const opening=!searchWrap.classList.contains('open');
+          searchWrap.classList.toggle('open',opening);
+          searchButton.setAttribute('aria-expanded',opening?'true':'false');
+          if(opening) requestAnimationFrame(()=>searchInput?.focus());
+        });
+        searchWrap.addEventListener('click',e=>e.stopPropagation());
+      }
+
+      const el=document.getElementById('typingLogoText');
+      if(!el)return;
+      const text='ANIPASTA.TOP';let charIndex=0,deleting=false,timer;
+      const render=value=>{const dot=value.indexOf('.');const yellow=dot<0?value:value.slice(0,dot);const white=dot<0?'':value.slice(dot);el.innerHTML=`<span class="typingBrandYellow" style="color:#f5c518 !important">${yellow}</span><span class="typingBrandWhite" style="color:#fff !important">${white}</span>`};
+      const tick=()=>{if(!deleting){charIndex+=1;render(text.slice(0,charIndex));if(charIndex>=text.length){deleting=true;timer=setTimeout(tick,1700)}else timer=setTimeout(tick,105)}else{charIndex-=1;render(text.slice(0,charIndex));if(charIndex<=0){deleting=false;timer=setTimeout(tick,300)}else timer=setTimeout(tick,65)}};
+      el.textContent='';timer=setTimeout(tick,250);window.addEventListener('beforeunload',()=>clearTimeout(timer),{once:true});
+    })();
   </script>
 </body>
 </html>
