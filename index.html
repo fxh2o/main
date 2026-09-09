@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
   <title>AniPasta - Anime Streaming</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+  <link rel="preconnect" href="https://cdn.jsdelivr.net">
   <link rel="stylesheet" href="styles.css">
   <link rel="stylesheet" href="legal.css">
   <link rel="stylesheet" href="site-enhancements.css">
@@ -68,6 +68,13 @@
       const searchPanel=document.getElementById('headerSearchPanel');
       const searchButton=document.getElementById('headerSearchButton');
       const searchInput=document.getElementById('search');
+      const closeSearchPanel=()=>{
+        if(!searchPanel||!searchButton)return;
+        searchPanel.classList.remove('show');
+        searchPanel.setAttribute('aria-hidden','true');
+        searchButton.setAttribute('aria-expanded','false');
+      };
+      const closeNotificationPanel=()=>document.getElementById('notificationPanel')?.classList.remove('show');
       if(searchPanel&&searchButton){
         searchButton.addEventListener('click',e=>{
           e.preventDefault();
@@ -80,6 +87,16 @@
         });
         searchPanel.addEventListener('click',e=>e.stopPropagation());
       }
+      let scrollCloseScheduled=false;
+      window.addEventListener('scroll',()=>{
+        if(scrollCloseScheduled)return;
+        scrollCloseScheduled=true;
+        requestAnimationFrame(()=>{
+          scrollCloseScheduled=false;
+          closeSearchPanel();
+          closeNotificationPanel();
+        });
+      },{passive:true});
 
       const el=document.getElementById('typingLogoText');
       if(!el)return;
