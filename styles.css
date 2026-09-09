@@ -73,7 +73,6 @@ img {
   -webkit-backdrop-filter: blur(20px);
 }
 
-
 .logo {
   display: inline-flex;
   align-items: center;
@@ -807,8 +806,6 @@ img {
   font-size: 11px;
 }
 
-
-
 #anipastaLoader,
 #anipastaTelegramPopup,
 #anipastaAbout {
@@ -1193,3 +1190,19 @@ img {
     font-size: 15px;
   }
 }
+
+/* Merged from site-enhancements.css: keep the main UI in one stylesheet. */
+.downloadBack{display:none !important;}
+.animeDownloadBar{position:relative;overflow:hidden;margin-top:14px !important;padding:14px 16px !important;border:1px solid rgba(245,197,24,.22) !important;border-radius:14px !important;background:linear-gradient(135deg,rgba(245,197,24,.09),rgba(255,255,255,.025) 48%,rgba(255,255,255,.015)) !important;box-shadow:0 10px 30px rgba(0,0,0,.22),inset 0 1px 0 rgba(255,255,255,.035);}
+.animeDownloadBar::before{content:"";position:absolute;inset:0 auto 0 0;width:3px;background:var(--accent,#f5c518);opacity:.9;}
+.animeDownloadInfo{gap:12px !important;}
+.animeDownloadIcon{position:relative;width:42px !important;height:42px !important;border:1px solid rgba(245,197,24,.3) !important;border-radius:12px !important;background:linear-gradient(145deg,rgba(245,197,24,.18),rgba(255,255,255,.055)) !important;box-shadow:0 6px 18px rgba(0,0,0,.22),inset 0 1px 0 rgba(255,255,255,.06);font-size:0 !important;}
+.animeDownloadIcon::before{content:"";position:absolute;left:50%;top:7px;width:5px;height:17px;transform:translateX(-50%);border-radius:4px;background:var(--accent,#f5c518);box-shadow:0 0 14px rgba(245,197,24,.32);}
+.animeDownloadIcon::after{content:"";position:absolute;left:50%;top:19px;width:12px;height:12px;transform:translateX(-50%) rotate(45deg);border-right:4px solid var(--accent,#f5c518);border-bottom:4px solid var(--accent,#f5c518);}
+.animeDownloadTitle{font-size:14px !important;}.animeDownloadSubtitle{font-size:11px !important;opacity:.58 !important;}
+.animeDownloadButton{min-width:112px;min-height:40px;padding:10px 16px !important;border-color:rgba(245,197,24,.3) !important;border-radius:10px !important;background:var(--accent,#f5c518) !important;color:#090909 !important;box-shadow:0 8px 22px rgba(245,197,24,.13);}
+.animeDownloadButton:hover{transform:translateY(-2px) !important;background:#ffd84b !important;border-color:rgba(255,255,255,.18) !important;box-shadow:0 12px 28px rgba(245,197,24,.2);}
+.typingLogoText{display:inline-block;min-width:11ch;white-space:nowrap;font-weight:900;}
+.typingBrandYellow{color:var(--accent,#f5c518)}.typingBrandWhite{color:var(--text,#fff)}.typingLogoCaret{display:none !important;}
+.episodesPanel{position:static !important;top:auto !important;max-height:none !important;}
+@media(max-width:760px){.animeDownloadBar.mobile-download-bottom{margin:14px 0 0 !important;}.animeDownloadBar.mobile-download-bottom .animeDownloadButton{width:100% !important;}}
