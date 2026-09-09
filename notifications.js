@@ -9,6 +9,14 @@
   const read = (key, fallback) => { try { const value = JSON.parse(localStorage.getItem(key) || 'null'); return value == null ? fallback : value; } catch { return fallback; } };
   const seenIds = () => new Set(Array.isArray(read(SEEN_IDS_KEY, [])) ? read(SEEN_IDS_KEY, []).map(String) : []);
   const updateDot = () => $('headerNotificationButton')?.classList.toggle('has-notification', localStorage.getItem(SEEN_KEY) !== '1');
+  function closeSearchPanel(){
+    const searchPanel = $('headerSearchPanel');
+    const searchButton = $('headerSearchButton');
+    if (!searchPanel) return;
+    searchPanel.classList.remove('show');
+    searchPanel.setAttribute('aria-hidden','true');
+    searchButton?.setAttribute('aria-expanded','false');
+  }
   function injectStyles(){
     if($('anipastaNotificationStyles')) return;
     const style=document.createElement('style'); style.id='anipastaNotificationStyles';
@@ -21,7 +29,10 @@
     wrap.innerHTML='<button id="headerNotificationButton" class="anipastaNotificationButton" type="button" aria-label="Notifications" title="Notifications"><svg viewBox="0 0 24 24"><path d="M18 9a6 6 0 0 0-12 0c0 7-3 7-3 8.5h18C21 16 18 16 18 9Z"></path><path d="M10 21h4"></path></svg></button>';
     const panel=document.createElement('div'); panel.id='notificationPanel'; panel.className='anipastaNotificationPanel'; panel.setAttribute('aria-live','polite'); header.append(wrap,panel);
     wrap.querySelector('button').addEventListener('click',async event=>{
-      event.stopPropagation(); if(panel.classList.contains('show')){panel.classList.remove('show');return;}
+      event.stopPropagation();
+      if(panel.classList.contains('show')){panel.classList.remove('show');return;}
+      // Search and notifications are mutually exclusive.
+      closeSearchPanel();
       panel.classList.add('show'); panel.innerHTML='<div class="anipastaNotificationItem"><div class="anipastaNotificationText">Loading notifications...</div></div>';
       try{
         const result=await app.db.from('notifications').select('id,title,message,created_at,expires_at').eq('is_active',true).gt('expires_at',new Date().toISOString()).order('created_at',{ascending:false});
@@ -33,6 +44,10 @@
     });
     panel.addEventListener('click',event=>{if(event.target.closest('#markNotificationsRead')){localStorage.setItem(SEEN_KEY,'1');updateDot();}event.stopPropagation();});
     document.addEventListener('click',event=>{if(!event.target.closest('#notificationPanel,#headerNotificationButton'))panel.classList.remove('show');});
+    $('headerSearchButton')?.addEventListener('click',()=>{
+      // Keep only one floating panel open at a time.
+      if(panel.classList.contains('show')) panel.classList.remove('show');
+    });
   }
   injectStyles(); injectUI(); updateDot();
 })();
