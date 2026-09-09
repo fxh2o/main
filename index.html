@@ -4,11 +4,8 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
   <title>AniPasta - Anime Streaming</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://cdn.jsdelivr.net">
   <link rel="stylesheet" href="styles.css">
-  <link rel="stylesheet" href="legal.css">
-  <link rel="stylesheet" href="site-enhancements.css">
   <style>
     .header{position:sticky;top:0;z-index:100}
     .header .searchWrap{position:static;display:block;width:auto;max-width:none;margin:0}
@@ -59,7 +56,31 @@
 
   <script src="supabase-config.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="performance.js"></script>
+  <script>
+    (() => {
+      'use strict';
+      if (!window.supabase || typeof window.supabase.createClient !== 'function' || window.__ANIPASTA_PERF_PATCHED__) return;
+      window.__ANIPASTA_PERF_PATCHED__ = true;
+      const originalCreateClient = window.supabase.createClient;
+      const animeColumns = 'id,title,poster_url,content_type,is_published,movie_duration,movie_url,download_links,created_at';
+      const episodeColumns = 'id,anime_id,season_number,episode_number,video_url,created_at';
+      window.supabase.createClient = function patchedCreateClient(...args) {
+        const client = originalCreateClient.apply(this, args);
+        const originalFrom = client.from.bind(client);
+        client.from = function patchedFrom(table, ...fromArgs) {
+          const builder = originalFrom(table, ...fromArgs);
+          if (table !== 'anime' && table !== 'episodes') return builder;
+          const originalSelect = builder.select.bind(builder);
+          builder.select = function patchedSelect(columns, ...selectArgs) {
+            if (columns === '*') columns = table === 'anime' ? animeColumns : episodeColumns;
+            return originalSelect(columns, ...selectArgs);
+          };
+          return builder;
+        };
+        return client;
+      };
+    })();
+  </script>
   <script src="app.js"></script>
   <script src="notifications.js"></script>
   <script src="download.js"></script>
