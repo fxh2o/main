@@ -23,8 +23,7 @@
       <div class="sectionHead historyHead"><div><h2>Watch History</h2></div><div class="historyActions"><button id="viewAllHistory" class="viewAllBtn hidden" type="button">View All</button><button id="clearHistory" class="clearHistoryBtn" type="button">Clear History</button></div></div>
       <div id="historyGrid" class="historyGrid"></div>
     </section>
-    <div class="sectionHead"><h2 id="heading">Latest Releases</h2></div>
-    <div id="grid" class="grid"><div class="empty">Loading anime...</div></div>
+    <div class="sectionHead"><h2 id="heading">Latest Releases</h2></div><div id="grid" class="grid"><div class="empty">Loading anime...</div></div>
   </main>
   <main id="searchPage" class="page hidden"><div class="sectionHead"><h2 id="searchPageTitle">Search Results</h2></div><div id="searchGrid" class="grid"></div></main>
   <main id="historyPage" class="page hidden"><div class="sectionHead"><h2>Watch History</h2><button id="clearHistoryPage" class="clearHistoryBtn" type="button">Clear History</button></div><div id="allHistoryGrid" class="grid"></div></main>
@@ -39,11 +38,10 @@
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="performance.js"></script>
   <script src="app.js"></script>
-  <script src="legal.js"></script>
-  <script src="account.js"></script>
+  <script src="notifications.js"></script>
   <script src="download.js"></script>
   <script>
-    (()=>{const el=document.getElementById('typingLogoText');if(!el)return;const text='ANIPASTA.TOP';let charIndex=0,deleting=false,timer;const render=value=>{const dot=value.indexOf('.');const yellow=dot<0?value:value.slice(0,dot);const white=dot<0?'':value.slice(dot);el.innerHTML=`<span class="typingBrandYellow" style="color:#f5c518 !important">${yellow}</span><span class="typingBrandWhite" style="color:#fff !important">${white}</span>`};const tick=()=>{if(!deleting){charIndex+=1;render(text.slice(0,charIndex));if(charIndex>=text.length){deleting=true;timer=setTimeout(tick,1700)}else timer=setTimeout(tick,105)}else{charIndex-=1;render(text.slice(0,charIndex));if(charIndex<=0){deleting=false;timer=setTimeout(tick,300)}else timer=setTimeout(tick,65)}};timer=setTimeout(tick,250);window.addEventListener('beforeunload',()=>clearTimeout(timer),{once:true})})();
+    (()=>{const el=document.getElementById('typingLogoText');if(!el)return;const text='ANIPASTA.TOP';let i=0,d=false,t;const render=v=>{const p=v.indexOf('.');el.innerHTML=`<span class="typingBrandYellow" style="color:#f5c518 !important">${p<0?v:v.slice(0,p)}</span><span class="typingBrandWhite" style="color:#fff !important">${p<0?'':v.slice(p)}</span>`};const tick=()=>{if(!d){i++;render(text.slice(0,i));if(i>=text.length)d=true;t=setTimeout(tick,d?1700:105)}else{i--;render(text.slice(0,i));if(i<=0)d=false;t=setTimeout(tick,d?65:300)}};t=setTimeout(tick,250);window.addEventListener('beforeunload',()=>clearTimeout(t),{once:true})})();
   </script>
 </body>
 </html>
