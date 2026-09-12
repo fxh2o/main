@@ -61,30 +61,32 @@
     style.textContent = `
       #anipastaReportPopup {
         position: fixed;
-        right: 12px;
-        bottom: 12px;
+        right: 8px;
+        bottom: 8px;
         z-index: 99999;
-        width: min(220px, calc(100vw - 24px));
+        width: min(205px, calc(100vw - 16px));
         display: flex;
         align-items: center;
-        gap: 8px;
-        padding: 8px 9px;
+        gap: 7px;
+        padding: 7px 8px;
         border: 1px solid var(--border-2);
         border-radius: 8px;
         background: rgba(20, 20, 20, .96);
-        box-shadow: 0 8px 24px rgba(0, 0, 0, .4);
-        backdrop-filter: blur(12px);
-        -webkit-backdrop-filter: blur(12px);
+        box-shadow: 0 7px 20px rgba(0, 0, 0, .38);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
         cursor: pointer;
+        color: inherit;
+        text-decoration: none;
       }
       #anipastaReportPopup:hover {
         border-color: var(--tg);
         background: rgba(24, 24, 24, .98);
       }
       #anipastaReportPopup .anipastaReportIcon {
-        width: 24px;
-        height: 24px;
-        flex: 0 0 24px;
+        width: 23px;
+        height: 23px;
+        flex: 0 0 23px;
         display: grid;
         place-items: center;
         border-radius: 6px;
@@ -92,8 +94,8 @@
         color: var(--tg);
       }
       #anipastaReportPopup .anipastaReportIcon svg {
-        width: 14px;
-        height: 14px;
+        width: 13px;
+        height: 13px;
         fill: currentColor;
       }
       #anipastaReportPopup .anipastaReportContent {
@@ -104,21 +106,25 @@
         color: var(--text);
         font-size: 10px;
         font-weight: 700;
-        line-height: 1.35;
+        line-height: 1.3;
       }
       #anipastaReportPopup .anipastaReportHint {
         margin-top: 2px;
-        color: var(--muted);
+        color: #229ed9;
         font-size: 9px;
-        font-weight: 600;
-        line-height: 1.25;
+        font-weight: 700;
+        line-height: 1.2;
+        text-decoration: none;
+      }
+      #anipastaReportPopup .anipastaReportHint:hover {
+        color: #5ecbff;
       }
       @media (max-width: 540px) {
         #anipastaReportPopup {
-          right: 8px;
-          bottom: 8px;
-          width: min(210px, calc(100vw - 16px));
-          padding: 7px 8px;
+          right: 7px;
+          bottom: 7px;
+          width: min(198px, calc(100vw - 14px));
+          padding: 7px;
         }
       }
     `;
