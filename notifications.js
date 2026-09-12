@@ -53,168 +53,95 @@
 (() => {
   'use strict';
 
-  const applyTelegramSupportPopup = () => {
-    const popup = document.getElementById('anipastaTelegramPopup');
-    if (!popup) return;
+  const injectReportSupportPopup = () => {
+    if (document.getElementById('anipastaReportPopup')) return;
 
-    const title = popup.querySelector('#anipastaTgTitle');
-    const text = popup.querySelector('.anipastaTgText');
-    const link = popup.querySelector('.anipastaTgJoin');
-    const icon = popup.querySelector('.anipastaTgIcon');
-
-    if (title) title.textContent = 'Need help?';
-    if (text) text.textContent = 'Report an error or request content on Telegram.';
-    if (link) {
-      link.textContent = 'Open Telegram';
-      link.href = 'https://t.me/Anipasta_Chat';
-      link.target = '_blank';
-      link.rel = 'noopener noreferrer';
-      link.setAttribute('aria-label', 'Open AniPasta Telegram chat');
-    }
-
-    if (icon) {
-      icon.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21.7 3.3 18.6 20c-.2 1.2-.9 1.5-1.8.9l-5-3.7-2.4 2.3c-.3.3-.5.5-1 .5l.4-5.1 9.3-8.4c.4-.4-.1-.6-.6-.2L6 13.7 1.1 12.2c-1.1-.3-1.1-1 .2-1.5L20.4 3c.9-.3 1.7.2 1.3.3Z"/></svg>';
-    }
-
-    if (!document.getElementById('anipastaTelegramSupportPatch')) {
-      const style = document.createElement('style');
-      style.id = 'anipastaTelegramSupportPatch';
-      style.textContent = `
-        #anipastaTelegramPopup {
-          position: fixed !important;
-          inset: auto 18px 18px auto !important;
-          z-index: 100001 !important;
-          width: min(330px, calc(100vw - 24px)) !important;
-          height: auto !important;
-          display: block !important;
-          padding: 0 !important;
-          background: transparent !important;
-          backdrop-filter: none !important;
-          -webkit-backdrop-filter: none !important;
-          opacity: 0;
-          visibility: hidden;
-          pointer-events: none;
-          transition: opacity .2s ease, visibility .2s ease;
+    const style = document.createElement('style');
+    style.id = 'anipastaReportPopupStyles';
+    style.textContent = `
+      #anipastaReportPopup {
+        position: fixed;
+        right: 14px;
+        bottom: 14px;
+        z-index: 99999;
+        width: min(275px, calc(100vw - 28px));
+        display: flex;
+        align-items: center;
+        gap: 9px;
+        padding: 9px 10px;
+        border: 1px solid var(--border-2);
+        border-radius: 9px;
+        background: rgba(20, 20, 20, .96);
+        box-shadow: 0 10px 30px rgba(0, 0, 0, .42);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+      }
+      #anipastaReportPopup .anipastaReportIcon {
+        width: 26px;
+        height: 26px;
+        flex: 0 0 26px;
+        display: grid;
+        place-items: center;
+        border-radius: 7px;
+        background: rgba(34, 158, 217, .13);
+        color: var(--tg);
+      }
+      #anipastaReportPopup .anipastaReportIcon svg {
+        width: 15px;
+        height: 15px;
+        fill: currentColor;
+      }
+      #anipastaReportPopup .anipastaReportContent {
+        min-width: 0;
+        flex: 1;
+      }
+      #anipastaReportPopup .anipastaReportText {
+        color: var(--muted);
+        font-size: 10px;
+        font-weight: 600;
+        line-height: 1.35;
+      }
+      #anipastaReportPopup .anipastaReportLink {
+        display: inline-flex;
+        align-items: center;
+        margin-top: 3px;
+        color: #7ed3ff;
+        font-size: 10px;
+        font-weight: 800;
+        text-decoration: none;
+      }
+      #anipastaReportPopup .anipastaReportLink:hover {
+        color: #fff;
+      }
+      @media (max-width: 540px) {
+        #anipastaReportPopup {
+          right: 10px;
+          bottom: 10px;
+          width: min(265px, calc(100vw - 20px));
+          padding: 8px 9px;
         }
+      }
+    `;
+    document.head.appendChild(style);
 
-        #anipastaTelegramPopup.show {
-          opacity: 1;
-          visibility: visible;
-          pointer-events: auto;
-        }
-
-        #anipastaTelegramPopup .anipastaTgBox {
-          width: 100% !important;
-          padding: 14px 46px 14px 14px !important;
-          border: 1px solid var(--border-2) !important;
-          border-radius: 12px !important;
-          background: rgba(20, 20, 20, .97) !important;
-          box-shadow: 0 14px 38px rgba(0,0,0,.5) !important;
-          text-align: left !important;
-          transform: translateY(8px) !important;
-          transition: transform .2s ease !important;
-          backdrop-filter: blur(16px) !important;
-          -webkit-backdrop-filter: blur(16px) !important;
-        }
-
-        #anipastaTelegramPopup.show .anipastaTgBox {
-          transform: translateY(0) !important;
-        }
-
-        #anipastaTelegramPopup .anipastaTgIcon {
-          width: 30px !important;
-          height: 30px !important;
-          display: grid !important;
-          place-items: center !important;
-          margin: 0 0 9px !important;
-          border-radius: 8px !important;
-          background: rgba(34, 158, 217, .14) !important;
-          color: var(--tg) !important;
-        }
-
-        #anipastaTelegramPopup .anipastaTgIcon svg {
-          width: 17px !important;
-          height: 17px !important;
-          fill: currentColor !important;
-        }
-
-        #anipastaTelegramPopup .anipastaTgTitle {
-          margin: 0 !important;
-          color: var(--text) !important;
-          font-size: 14px !important;
-          font-weight: 800 !important;
-          line-height: 1.3 !important;
-        }
-
-        #anipastaTelegramPopup .anipastaTgText {
-          margin: 5px 0 11px !important;
-          color: var(--muted) !important;
-          font-size: 11px !important;
-          line-height: 1.5 !important;
-        }
-
-        #anipastaTelegramPopup .anipastaTgJoin {
-          display: inline-flex !important;
-          align-items: center !important;
-          justify-content: center !important;
-          min-height: 30px !important;
-          padding: 0 11px !important;
-          border: 1px solid rgba(34, 158, 217, .5) !important;
-          border-radius: 7px !important;
-          background: rgba(34, 158, 217, .14) !important;
-          color: #7ed3ff !important;
-          font-size: 11px !important;
-          font-weight: 800 !important;
-          text-decoration: none !important;
-          transition: background .15s ease, border-color .15s ease, color .15s ease !important;
-        }
-
-        #anipastaTelegramPopup .anipastaTgJoin:hover {
-          border-color: var(--tg) !important;
-          background: rgba(34, 158, 217, .22) !important;
-          color: #fff !important;
-        }
-
-        #anipastaTelegramPopup .anipastaTgClose {
-          position: absolute !important;
-          top: 8px !important;
-          right: 8px !important;
-          width: 28px !important;
-          height: 28px !important;
-          min-width: 28px !important;
-          display: grid !important;
-          place-items: center !important;
-          border: 1px solid var(--border-2) !important;
-          border-radius: 7px !important;
-          background: var(--surface-2) !important;
-          color: var(--muted) !important;
-          font-size: 17px !important;
-          line-height: 1 !important;
-        }
-
-        #anipastaTelegramPopup .anipastaTgClose:hover {
-          border-color: var(--accent) !important;
-          color: var(--text) !important;
-        }
-
-        @media (max-width: 540px) {
-          #anipastaTelegramPopup {
-            inset: auto 12px 12px 12px !important;
-            width: auto !important;
-          }
-
-          #anipastaTelegramPopup .anipastaTgBox {
-            padding: 13px 44px 13px 13px !important;
-          }
-        }
-      `;
-      document.head.appendChild(style);
-    }
+    const popup = document.createElement('aside');
+    popup.id = 'anipastaReportPopup';
+    popup.setAttribute('aria-label', 'AniPasta support');
+    popup.innerHTML = `
+      <div class="anipastaReportIcon" aria-hidden="true">
+        <svg viewBox="0 0 24 24"><path d="M21.7 3.3 18.6 20c-.2 1.2-.9 1.5-1.8.9l-5-3.7-2.4 2.3c-.3.3-.5.5-1 .5l.4-5.1 9.3-8.4c.4-.4-.1-.6-.6-.2L6 13.7 1.1 12.2c-1.1-.3-1.1-1 .2-1.5L20.4 3c.9-.3 1.7.2 1.3.3Z"/></svg>
+      </div>
+      <div class="anipastaReportContent">
+        <div class="anipastaReportText">Report an error or request content</div>
+        <a class="anipastaReportLink" href="https://t.me/Anipasta_Chat" target="_blank" rel="noopener noreferrer">Contact us on Telegram</a>
+      </div>
+    `;
+    document.body.appendChild(popup);
   };
 
   if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', applyTelegramSupportPopup, { once: true });
+    document.addEventListener('DOMContentLoaded', injectReportSupportPopup, { once: true });
   } else {
-    applyTelegramSupportPopup();
+    injectReportSupportPopup();
   }
 })();
