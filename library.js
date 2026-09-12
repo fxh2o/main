@@ -28,18 +28,18 @@
     style.id = 'anipastaHeaderNavStyles';
     style.textContent = `
       .header { display: grid !important; grid-template-columns: 1fr auto 1fr !important; align-items: center !important; }
-      .headerCenterNav { grid-column: 2 !important; display: flex !important; align-items: center !important; justify-content: center !important; gap: 8px !important; }
-      .headerCenterNav .headerNavButton { width: auto !important; min-width: 76px !important; height: 40px !important; padding: 0 16px !important; display: flex !important; align-items: center !important; justify-content: center !important; border: 1px solid var(--border-2) !important; border-radius: 9px !important; background: var(--surface-2) !important; color: var(--muted) !important; font-size: 12px !important; font-weight: 800 !important; line-height: 1 !important; text-decoration: none !important; cursor: pointer !important; }
-      .headerCenterNav .headerNavButton:hover { border-color: var(--accent) !important; background: var(--surface-3) !important; color: var(--text) !important; }
-      .headerCenterNav .headerNavButton.active { border-color: var(--accent) !important; background: color-mix(in srgb,var(--accent) 12%,var(--surface-2)) !important; color: var(--text) !important; }
+      .headerCenterNav { grid-column: 2 !important; display: flex !important; align-items: center !important; justify-content: center !important; gap: 14px !important; }
+      .headerCenterNav .headerNavButton { width: auto !important; min-width: 0 !important; height: auto !important; padding: 0 !important; display: inline-flex !important; align-items: center !important; justify-content: center !important; border: 0 !important; border-radius: 0 !important; background: transparent !important; color: var(--muted) !important; font-size: 13px !important; font-weight: 800 !important; line-height: 1.2 !important; text-decoration: none !important; cursor: pointer !important; }
+      .headerCenterNav .headerNavButton:hover { border: 0 !important; background: transparent !important; color: var(--text) !important; }
+      .headerCenterNav .headerNavButton.active { border: 0 !important; background: transparent !important; color: var(--accent) !important; }
       .headerCenterNav .headerNavButton svg { display: none !important; }
       .headerCenterNav + .headerActions { grid-column: 3 !important; justify-self: end !important; margin-left: 0 !important; display: flex !important; align-items: center !important; gap: 8px !important; }
       .headerActions .headerNavButton { display: none !important; }
       .headerActions .headerSearchToggle { margin-left: 0 !important; }
       .headerActions .anipastaNotificationWrap { display: block !important; }
       #grid.anipastaLatestMetaPending .card { visibility: hidden !important; }
-      @media (max-width: 640px) { .headerCenterNav .headerNavButton { min-width: 68px !important; padding: 0 12px !important; } }
-      @media (max-width: 440px) { .headerCenterNav { gap: 6px !important; } .headerCenterNav .headerNavButton { min-width: 62px !important; height: 38px !important; padding: 0 10px !important; font-size: 11px !important; } }
+      @media (max-width: 640px) { .headerCenterNav { gap: 12px !important; } .headerCenterNav .headerNavButton { font-size: 12px !important; } }
+      @media (max-width: 440px) { .headerCenterNav { gap: 10px !important; } .headerCenterNav .headerNavButton { font-size: 11px !important; } }
     `;
     document.head.appendChild(style);
   }
