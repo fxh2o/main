@@ -62,7 +62,7 @@
         right: 8px;
         bottom: 8px;
         z-index: 99999;
-        width: min(205px, calc(100vw - 16px));
+        width: min(235px, calc(100vw - 16px));
         display: flex;
         align-items: center;
         gap: 7px;
@@ -102,12 +102,10 @@
       }
       #anipastaReportPopup .anipastaReportText {
         color: var(--text);
-        font-size: 10px;
+        font-size: 9px;
         font-weight: 700;
         line-height: 1.3;
         white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
       }
       #anipastaReportPopup .anipastaReportHint {
         margin-top: 2px;
@@ -124,7 +122,7 @@
         #anipastaReportPopup {
           right: 7px;
           bottom: 7px;
-          width: min(198px, calc(100vw - 14px));
+          width: min(225px, calc(100vw - 14px));
           padding: 7px;
         }
       }
