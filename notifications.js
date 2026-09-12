@@ -43,9 +43,7 @@
     });
     panel.addEventListener('click',event=>{if(event.target.closest('#markNotificationsRead')){localStorage.setItem(SEEN_KEY,'1');updateDot();}event.stopPropagation();});
     document.addEventListener('click',event=>{if(!event.target.closest('#notificationPanel,#headerNotificationButton'))panel.classList.remove('show');});
-    $('headerSearchButton')?.addEventListener('click',()=>{
-      if(panel.classList.contains('show')) panel.classList.remove('show');
-    });
+    $('headerSearchButton')?.addEventListener('click',()=>{if(panel.classList.contains('show')) panel.classList.remove('show');});
   }
   injectStyles(); injectUI(); updateDot();
 })();
@@ -107,6 +105,9 @@
         font-size: 10px;
         font-weight: 700;
         line-height: 1.3;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
       }
       #anipastaReportPopup .anipastaReportHint {
         margin-top: 2px;
