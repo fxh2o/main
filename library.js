@@ -37,10 +37,68 @@
       .headerActions .headerNavButton { display: none !important; }
       .headerActions .headerSearchToggle { margin-left: 0 !important; }
       .headerActions .anipastaNotificationWrap { display: block !important; }
-      @media (max-width: 640px) { .headerCenterNav { gap: 12px !important; } .headerCenterNav .headerNavButton { font-size: 12px !important; } }
-      @media (max-width: 440px) { .headerCenterNav { gap: 10px !important; } .headerCenterNav .headerNavButton { font-size: 11px !important; } }
+      #homeButton { display: inline-flex !important; align-items: center !important; gap: 8px !important; min-width: 0 !important; }
+      #anipastaActiveUsers { display: inline-flex !important; align-items: center !important; gap: 4px !important; padding: 2px 7px !important; border: 1px solid var(--border-2) !important; border-radius: 999px !important; color: var(--muted) !important; background: var(--surface-2) !important; font-size: 9px !important; font-weight: 800 !important; line-height: 1.2 !important; white-space: nowrap !important; pointer-events: none !important; }
+      #anipastaActiveUsers .activeUsersDot { width: 5px !important; height: 5px !important; border-radius: 50% !important; background: #35c759 !important; box-shadow: 0 0 0 2px rgba(53,199,89,.12) !important; flex: 0 0 auto !important; }
+      #anipastaActiveUsers .activeUsersCount { min-width: 7px !important; text-align: center !important; }
+      @media (max-width: 640px) { .headerCenterNav { gap: 12px !important; } .headerCenterNav .headerNavButton { font-size: 12px !important; } #anipastaActiveUsers { font-size: 8px !important; padding: 2px 6px !important; } }
+      @media (max-width: 440px) { .headerCenterNav { gap: 10px !important; } .headerCenterNav .headerNavButton { font-size: 11px !important; } #anipastaActiveUsers { gap: 3px !important; padding: 2px 5px !important; font-size: 8px !important; } }
     `;
     document.head.appendChild(style);
+  }
+
+  function setupActiveUsers() {
+    const logo = $('homeButton');
+    if (!logo || !app.db || typeof app.db.channel !== 'function') return;
+
+    let badge = $('anipastaActiveUsers');
+    if (!badge) {
+      badge = document.createElement('span');
+      badge.id = 'anipastaActiveUsers';
+      badge.setAttribute('aria-label', 'Currently active visitors');
+      badge.innerHTML = '<span class="activeUsersDot" aria-hidden="true"></span><span class="activeUsersCount">1</span>';
+      logo.appendChild(badge);
+    }
+
+    const countNode = badge.querySelector('.activeUsersCount');
+    const presenceKey = `visitor-${Date.now()}-${Math.random().toString(36).slice(2)}`;
+    let channel;
+    try {
+      channel = app.db.channel('anipasta-active-users', {
+        config: { presence: { key: presenceKey } }
+      });
+    } catch (error) {
+      console.warn('AniPasta active-user channel setup failed', error);
+      return;
+    }
+
+    const updateCount = () => {
+      try {
+        const presence = channel.presenceState() || {};
+        const total = Math.max(1, Object.keys(presence).length);
+        if (countNode) countNode.textContent = String(total);
+      } catch (error) {
+        console.warn('AniPasta active-user count update failed', error);
+      }
+    };
+
+    channel
+      .on('presence', { event: 'sync' }, updateCount)
+      .on('presence', { event: 'join' }, updateCount)
+      .on('presence', { event: 'leave' }, updateCount)
+      .subscribe(async status => {
+        if (status !== 'SUBSCRIBED') return;
+        try {
+          await channel.track({ online_at: new Date().toISOString() });
+          updateCount();
+        } catch (error) {
+          console.warn('AniPasta active-user presence failed', error);
+        }
+      });
+
+    window.addEventListener('pagehide', () => {
+      try { channel.untrack(); } catch {}
+    }, { once: true });
   }
 
   function setupHeaderNavigation() {
@@ -197,5 +255,6 @@
 
   injectHeaderNavStyles();
   setupHeaderNavigation();
+  setupActiveUsers();
   hideLibrary();
 })();
