@@ -17,6 +17,7 @@
   const LETTERS = '#ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
   let selectedLetter = 'A';
   let libraryActivated = false;
+  let homeMetaRequest = 0;
 
   const esc = value => typeof app.esc === 'function'
     ? app.esc(value)
@@ -70,6 +71,59 @@
     moveNotificationToActions();
     const observer = new MutationObserver(moveNotificationToActions);
     observer.observe(header, { childList: true, subtree: true });
+  }
+
+  async function refreshHomeReleaseMeta() {
+    const homePage = $('homePage');
+    const grid = $('grid');
+    if (!homePage || !grid || homePage.classList.contains('hidden')) return;
+
+    const cards = [...grid.querySelectorAll('.card[data-id]')];
+    if (!cards.length || !app.db) return;
+
+    const ids = [...new Set(cards.map(card => String(card.dataset.id || '')).filter(Boolean))];
+    if (!ids.length) return;
+
+    const requestId = ++homeMetaRequest;
+
+    try {
+      const result = await app.db.from('episodes')
+        .select('anime_id,season_number,episode_number,created_at')
+        .in('anime_id', ids)
+        .order('season_number', { ascending: false })
+        .order('episode_number', { ascending: false });
+
+      if (requestId !== homeMetaRequest) return;
+      if (result?.error) throw result.error;
+
+      const latestByAnime = {};
+      (result.data || []).forEach(row => {
+        const id = String(row.anime_id);
+        if (latestByAnime[id] == null) latestByAnime[id] = row;
+      });
+
+      const animeItems = typeof app.getAnime === 'function' ? app.getAnime() : [];
+
+      cards.forEach(card => {
+        const id = String(card.dataset.id || '');
+        const anime = animeItems.find(item => String(item.id) === id);
+        if (!anime || anime.content_type === 'movie') return;
+
+        const latest = latestByAnime[id];
+        if (!latest) return;
+
+        let meta = card.querySelector('.releaseMeta');
+        if (!meta) {
+          meta = document.createElement('span');
+          meta.className = 'releaseMeta';
+          card.querySelector('.poster')?.appendChild(meta);
+        }
+
+        meta.innerHTML = `<span>S${latest.season_number || 1}</span><span class="dot"></span><span>E${latest.episode_number}</span>`;
+      });
+    } catch (error) {
+      console.warn('Unable to load latest release metadata', error);
+    }
   }
 
   function hideLibrary() {
@@ -182,6 +236,7 @@
   });
 
   document.addEventListener('anipasta:cards-rendered', () => {
+    refreshHomeReleaseMeta();
     if (!page.classList.contains('hidden') && libraryActivated) renderLibrary();
   });
 
@@ -198,4 +253,5 @@
   injectHeaderNavStyles();
   setupHeaderNavigation();
   hideLibrary();
+  refreshHomeReleaseMeta();
 })();
