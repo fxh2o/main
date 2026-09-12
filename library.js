@@ -102,6 +102,13 @@
     header.insertBefore(nav, actions);
     nav.append(headerHomeButton, libraryButton);
 
+    headerHomeButton.textContent = 'Home';
+    libraryButton.textContent = 'Library';
+    headerHomeButton.setAttribute('aria-label', 'Home');
+    headerHomeButton.title = 'Home';
+    libraryButton.setAttribute('aria-label', 'Library');
+    libraryButton.title = 'Library';
+
     const moveNotificationToActions = () => {
       const notificationWrap = header.querySelector('.anipastaNotificationWrap');
       if (notificationWrap && notificationWrap.parentElement !== actions) actions.appendChild(notificationWrap);
