@@ -27,65 +27,18 @@
     const style = document.createElement('style');
     style.id = 'anipastaHeaderNavStyles';
     style.textContent = `
-      .header {
-        display: grid !important;
-        grid-template-columns: 1fr auto 1fr !important;
-        align-items: center !important;
-      }
-      .headerCenterNav {
-        grid-column: 2 !important;
-        display: flex !important;
-        align-items: center !important;
-        justify-content: center !important;
-        gap: 8px !important;
-      }
-      .headerCenterNav .headerNavButton {
-        width: auto !important;
-        min-width: 76px !important;
-        height: 40px !important;
-        padding: 0 16px !important;
-        display: flex !important;
-        align-items: center !important;
-        justify-content: center !important;
-        border: 1px solid var(--border-2) !important;
-        border-radius: 9px !important;
-        background: var(--surface-2) !important;
-        color: var(--muted) !important;
-        font-size: 12px !important;
-        font-weight: 800 !important;
-        line-height: 1 !important;
-        text-decoration: none !important;
-        cursor: pointer !important;
-      }
-      .headerCenterNav .headerNavButton:hover {
-        border-color: var(--accent) !important;
-        background: var(--surface-3) !important;
-        color: var(--text) !important;
-      }
-      .headerCenterNav .headerNavButton.active {
-        border-color: var(--accent) !important;
-        background: color-mix(in srgb,var(--accent) 12%,var(--surface-2)) !important;
-        color: var(--text) !important;
-      }
+      .header { display: grid !important; grid-template-columns: 1fr auto 1fr !important; align-items: center !important; }
+      .headerCenterNav { grid-column: 2 !important; display: flex !important; align-items: center !important; justify-content: center !important; gap: 8px !important; }
+      .headerCenterNav .headerNavButton { width: auto !important; min-width: 76px !important; height: 40px !important; padding: 0 16px !important; display: flex !important; align-items: center !important; justify-content: center !important; border: 1px solid var(--border-2) !important; border-radius: 9px !important; background: var(--surface-2) !important; color: var(--muted) !important; font-size: 12px !important; font-weight: 800 !important; line-height: 1 !important; text-decoration: none !important; cursor: pointer !important; }
+      .headerCenterNav .headerNavButton:hover { border-color: var(--accent) !important; background: var(--surface-3) !important; color: var(--text) !important; }
+      .headerCenterNav .headerNavButton.active { border-color: var(--accent) !important; background: color-mix(in srgb,var(--accent) 12%,var(--surface-2)) !important; color: var(--text) !important; }
       .headerCenterNav .headerNavButton svg { display: none !important; }
-      .headerCenterNav + .headerActions {
-        grid-column: 3 !important;
-        justify-self: end !important;
-        margin-left: 0 !important;
-        display: flex !important;
-        align-items: center !important;
-        gap: 8px !important;
-      }
+      .headerCenterNav + .headerActions { grid-column: 3 !important; justify-self: end !important; margin-left: 0 !important; display: flex !important; align-items: center !important; gap: 8px !important; }
       .headerActions .headerNavButton { display: none !important; }
       .headerActions .headerSearchToggle { margin-left: 0 !important; }
       .headerActions .anipastaNotificationWrap { display: block !important; }
-      @media (max-width: 640px) {
-        .headerCenterNav .headerNavButton { min-width: 68px !important; padding: 0 12px !important; }
-      }
-      @media (max-width: 440px) {
-        .headerCenterNav { gap: 6px !important; }
-        .headerCenterNav .headerNavButton { min-width: 62px !important; height: 38px !important; padding: 0 10px !important; font-size: 11px !important; }
-      }
+      @media (max-width: 640px) { .headerCenterNav .headerNavButton { min-width: 68px !important; padding: 0 12px !important; } }
+      @media (max-width: 440px) { .headerCenterNav { gap: 6px !important; } .headerCenterNav .headerNavButton { min-width: 62px !important; height: 38px !important; padding: 0 10px !important; font-size: 11px !important; } }
     `;
     document.head.appendChild(style);
   }
@@ -143,9 +96,7 @@
       return /[A-Z]/.test(first) ? first : '#';
     }));
 
-    if (!available.has(selectedLetter)) {
-      selectedLetter = available.has('A') ? 'A' : (LETTERS.find(letter => available.has(letter)) || '#');
-    }
+    if (!available.has(selectedLetter)) selectedLetter = available.has('A') ? 'A' : (LETTERS.find(letter => available.has(letter)) || '#');
 
     alphabet.innerHTML = LETTERS.map(letter => {
       const disabled = !available.has(letter);
@@ -157,14 +108,12 @@
     const items = visibleAnime();
     renderAlphabet(items);
     const filtered = items.filter(anime => startsWithSelectedLetter(anime.title, selectedLetter));
-
     count.textContent = `${items.length} title${items.length === 1 ? '' : 's'}`;
 
     if (!items.length) {
-      list.innerHTML = '<div class="libraryEmpty">Loading library...</div>';
+      list.innerHTML = '<div class="libraryEmpty">No titles found.</div>';
       return;
     }
-
     if (!filtered.length) {
       list.innerHTML = '<div class="libraryEmpty">No titles found for this letter.</div>';
       return;
@@ -172,7 +121,6 @@
 
     const midpoint = Math.ceil(filtered.length / 2);
     const columns = [filtered.slice(0, midpoint), filtered.slice(midpoint)];
-
     list.innerHTML = columns.map(column => `
       <div class="libraryCol">
         ${column.map(anime => {
@@ -186,7 +134,7 @@
     `).join('');
   }
 
-  function showLibrary(push = true) {
+  async function showLibrary(push = true) {
     libraryActivated = true;
     hideLibrary();
     $('homePage')?.classList.add('hidden');
@@ -201,29 +149,21 @@
     page.classList.remove('hidden');
     libraryButton.classList.add('active');
     app.setView?.('library');
+
+    if (typeof app.loadAllAnime === 'function') {
+      list.innerHTML = '<div class="libraryEmpty">Loading library...</div>';
+      await app.loadAllAnime({ showLoader: true });
+    }
     renderLibrary();
     window.scrollTo({ top: 0, behavior: 'smooth' });
 
-    if (push && location.hash !== '#library') {
-      history.pushState({ view: 'library' }, '', `${location.pathname}${location.search}#library`);
-    }
+    if (push && location.hash !== '#library') history.pushState({ view: 'library' }, '', `${location.pathname}${location.search}#library`);
   }
 
-  function goHomeFromHeader() {
-    hideLibrary();
-    app.goHome?.();
-  }
+  function goHomeFromHeader() { hideLibrary(); app.goHome?.(); }
 
-  libraryButton.addEventListener('click', event => {
-    event.preventDefault();
-    event.stopPropagation();
-    showLibrary(true);
-  });
-
-  headerHomeButton.addEventListener('click', event => {
-    event.preventDefault();
-    goHomeFromHeader();
-  });
+  libraryButton.addEventListener('click', event => { event.preventDefault(); event.stopPropagation(); showLibrary(true).catch(error => console.warn('Unable to load library', error)); });
+  headerHomeButton.addEventListener('click', event => { event.preventDefault(); goHomeFromHeader(); });
 
   alphabet.addEventListener('click', event => {
     const button = event.target.closest('[data-library-letter]');
@@ -241,47 +181,19 @@
     app.openAnimeById?.(id, null, false);
   });
 
-  document.addEventListener('keydown', event => {
-    if (event.key === 'Enter' && event.target?.id === 'search' && !page.classList.contains('hidden')) hideLibrary();
-  }, true);
-
   document.addEventListener('anipasta:cards-rendered', () => {
     if (!page.classList.contains('hidden') && libraryActivated) renderLibrary();
   });
 
   const originalOpenAnime = app.openAnimeById;
-  if (typeof originalOpenAnime === 'function') {
-    app.openAnimeById = (...args) => {
-      hideLibrary();
-      return originalOpenAnime(...args);
-    };
-  }
-
+  if (typeof originalOpenAnime === 'function') app.openAnimeById = (...args) => { hideLibrary(); return originalOpenAnime(...args); };
   const originalGoHome = app.goHome;
-  if (typeof originalGoHome === 'function') {
-    app.goHome = (...args) => {
-      hideLibrary();
-      return originalGoHome(...args);
-    };
-  }
-
+  if (typeof originalGoHome === 'function') app.goHome = (...args) => { hideLibrary(); return originalGoHome(...args); };
   const originalShowHistory = app.showHistoryPage;
-  if (typeof originalShowHistory === 'function') {
-    app.showHistoryPage = (...args) => {
-      hideLibrary();
-      return originalShowHistory(...args);
-    };
-  }
+  if (typeof originalShowHistory === 'function') app.showHistoryPage = (...args) => { hideLibrary(); return originalShowHistory(...args); };
 
-  window.addEventListener('popstate', () => {
-    if (location.hash === '#library' && libraryActivated) showLibrary(false);
-    else hideLibrary();
-  });
-
-  window.addEventListener('hashchange', () => {
-    if (location.hash === '#library' && libraryActivated) showLibrary(false);
-    else hideLibrary();
-  });
+  window.addEventListener('popstate', () => { if (location.hash === '#library' && libraryActivated) showLibrary(false).catch(() => {}); else hideLibrary(); });
+  window.addEventListener('hashchange', () => { if (location.hash === '#library' && libraryActivated) showLibrary(false).catch(() => {}); else hideLibrary(); });
 
   injectHeaderNavStyles();
   setupHeaderNavigation();
