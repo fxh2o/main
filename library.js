@@ -16,10 +16,101 @@
 
   const LETTERS = '#ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
   let selectedLetter = 'A';
+  let libraryActivated = false;
 
   const esc = value => typeof app.esc === 'function'
     ? app.esc(value)
     : String(value ?? '').replace(/[&<>\"']/g, char => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '\"': '&quot;', "'": '&#39;' }[char]));
+
+  function injectHeaderNavStyles() {
+    if ($('anipastaHeaderNavStyles')) return;
+    const style = document.createElement('style');
+    style.id = 'anipastaHeaderNavStyles';
+    style.textContent = `
+      .header {
+        display: grid !important;
+        grid-template-columns: 1fr auto 1fr !important;
+        align-items: center !important;
+      }
+      .headerCenterNav {
+        grid-column: 2 !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        gap: 8px !important;
+      }
+      .headerCenterNav .headerNavButton {
+        width: auto !important;
+        min-width: 76px !important;
+        height: 40px !important;
+        padding: 0 16px !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        border: 1px solid var(--border-2) !important;
+        border-radius: 9px !important;
+        background: var(--surface-2) !important;
+        color: var(--muted) !important;
+        font-size: 12px !important;
+        font-weight: 800 !important;
+        line-height: 1 !important;
+        text-decoration: none !important;
+        cursor: pointer !important;
+      }
+      .headerCenterNav .headerNavButton:hover {
+        border-color: var(--accent) !important;
+        background: var(--surface-3) !important;
+        color: var(--text) !important;
+      }
+      .headerCenterNav .headerNavButton.active {
+        border-color: var(--accent) !important;
+        background: color-mix(in srgb,var(--accent) 12%,var(--surface-2)) !important;
+        color: var(--text) !important;
+      }
+      .headerCenterNav .headerNavButton svg { display: none !important; }
+      .headerCenterNav + .headerActions {
+        grid-column: 3 !important;
+        justify-self: end !important;
+        margin-left: 0 !important;
+        display: flex !important;
+        align-items: center !important;
+        gap: 8px !important;
+      }
+      .headerActions .headerNavButton { display: none !important; }
+      .headerActions .headerSearchToggle { margin-left: 0 !important; }
+      .headerActions .anipastaNotificationWrap { display: block !important; }
+      @media (max-width: 640px) {
+        .headerCenterNav .headerNavButton { min-width: 68px !important; padding: 0 12px !important; }
+      }
+      @media (max-width: 440px) {
+        .headerCenterNav { gap: 6px !important; }
+        .headerCenterNav .headerNavButton { min-width: 62px !important; height: 38px !important; padding: 0 10px !important; font-size: 11px !important; }
+      }
+    `;
+    document.head.appendChild(style);
+  }
+
+  function setupHeaderNavigation() {
+    const header = document.querySelector('.header');
+    const actions = header?.querySelector('.headerActions');
+    if (!header || !actions || $('headerCenterNav')) return;
+
+    const nav = document.createElement('nav');
+    nav.id = 'headerCenterNav';
+    nav.className = 'headerCenterNav';
+    nav.setAttribute('aria-label', 'Primary navigation');
+    header.insertBefore(nav, actions);
+    nav.append(headerHomeButton, libraryButton);
+
+    const moveNotificationToActions = () => {
+      const notificationWrap = header.querySelector('.anipastaNotificationWrap');
+      if (notificationWrap && notificationWrap.parentElement !== actions) actions.appendChild(notificationWrap);
+    };
+
+    moveNotificationToActions();
+    const observer = new MutationObserver(moveNotificationToActions);
+    observer.observe(header, { childList: true, subtree: true });
+  }
 
   function hideLibrary() {
     page.classList.add('hidden');
@@ -89,6 +180,7 @@
   }
 
   function showLibrary(push = true) {
+    libraryActivated = true;
     hideLibrary();
     $('homePage')?.classList.add('hidden');
     $('watchPage')?.classList.add('hidden');
@@ -147,7 +239,7 @@
   }, true);
 
   document.addEventListener('anipasta:cards-rendered', () => {
-    if (!page.classList.contains('hidden')) renderLibrary();
+    if (!page.classList.contains('hidden') && libraryActivated) renderLibrary();
   });
 
   const originalOpenAnime = app.openAnimeById;
@@ -175,15 +267,16 @@
   }
 
   window.addEventListener('popstate', () => {
-    if (location.hash === '#library') showLibrary(false);
+    if (location.hash === '#library' && libraryActivated) showLibrary(false);
     else hideLibrary();
   });
 
   window.addEventListener('hashchange', () => {
-    if (location.hash === '#library') showLibrary(false);
+    if (location.hash === '#library' && libraryActivated) showLibrary(false);
     else hideLibrary();
   });
 
-  if (location.hash === '#library') showLibrary(false);
-  else hideLibrary();
+  injectHeaderNavStyles();
+  setupHeaderNavigation();
+  hideLibrary();
 })();
