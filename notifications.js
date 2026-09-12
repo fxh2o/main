@@ -61,34 +61,39 @@
     style.textContent = `
       #anipastaReportPopup {
         position: fixed;
-        right: 14px;
-        bottom: 14px;
+        right: 12px;
+        bottom: 12px;
         z-index: 99999;
-        width: min(275px, calc(100vw - 28px));
+        width: min(220px, calc(100vw - 24px));
         display: flex;
         align-items: center;
-        gap: 9px;
-        padding: 9px 10px;
+        gap: 8px;
+        padding: 8px 9px;
         border: 1px solid var(--border-2);
-        border-radius: 9px;
+        border-radius: 8px;
         background: rgba(20, 20, 20, .96);
-        box-shadow: 0 10px 30px rgba(0, 0, 0, .42);
+        box-shadow: 0 8px 24px rgba(0, 0, 0, .4);
         backdrop-filter: blur(12px);
         -webkit-backdrop-filter: blur(12px);
+        cursor: pointer;
+      }
+      #anipastaReportPopup:hover {
+        border-color: var(--tg);
+        background: rgba(24, 24, 24, .98);
       }
       #anipastaReportPopup .anipastaReportIcon {
-        width: 26px;
-        height: 26px;
-        flex: 0 0 26px;
+        width: 24px;
+        height: 24px;
+        flex: 0 0 24px;
         display: grid;
         place-items: center;
-        border-radius: 7px;
+        border-radius: 6px;
         background: rgba(34, 158, 217, .13);
         color: var(--tg);
       }
       #anipastaReportPopup .anipastaReportIcon svg {
-        width: 15px;
-        height: 15px;
+        width: 14px;
+        height: 14px;
         fill: currentColor;
       }
       #anipastaReportPopup .anipastaReportContent {
@@ -96,44 +101,42 @@
         flex: 1;
       }
       #anipastaReportPopup .anipastaReportText {
-        color: var(--muted);
+        color: var(--text);
         font-size: 10px;
-        font-weight: 600;
+        font-weight: 700;
         line-height: 1.35;
       }
-      #anipastaReportPopup .anipastaReportLink {
-        display: inline-flex;
-        align-items: center;
-        margin-top: 3px;
-        color: #7ed3ff;
-        font-size: 10px;
-        font-weight: 800;
-        text-decoration: none;
-      }
-      #anipastaReportPopup .anipastaReportLink:hover {
-        color: #fff;
+      #anipastaReportPopup .anipastaReportHint {
+        margin-top: 2px;
+        color: var(--muted);
+        font-size: 9px;
+        font-weight: 600;
+        line-height: 1.25;
       }
       @media (max-width: 540px) {
         #anipastaReportPopup {
-          right: 10px;
-          bottom: 10px;
-          width: min(265px, calc(100vw - 20px));
-          padding: 8px 9px;
+          right: 8px;
+          bottom: 8px;
+          width: min(210px, calc(100vw - 16px));
+          padding: 7px 8px;
         }
       }
     `;
     document.head.appendChild(style);
 
-    const popup = document.createElement('aside');
+    const popup = document.createElement('a');
     popup.id = 'anipastaReportPopup';
-    popup.setAttribute('aria-label', 'AniPasta support');
+    popup.href = 'https://t.me/Anipasta_Chat';
+    popup.target = '_blank';
+    popup.rel = 'noopener noreferrer';
+    popup.setAttribute('aria-label', 'Report an error or request content on Telegram');
     popup.innerHTML = `
       <div class="anipastaReportIcon" aria-hidden="true">
         <svg viewBox="0 0 24 24"><path d="M21.7 3.3 18.6 20c-.2 1.2-.9 1.5-1.8.9l-5-3.7-2.4 2.3c-.3.3-.5.5-1 .5l.4-5.1 9.3-8.4c.4-.4-.1-.6-.6-.2L6 13.7 1.1 12.2c-1.1-.3-1.1-1 .2-1.5L20.4 3c.9-.3 1.7.2 1.3.3Z"/></svg>
       </div>
       <div class="anipastaReportContent">
         <div class="anipastaReportText">Report an error or request content</div>
-        <a class="anipastaReportLink" href="https://t.me/Anipasta_Chat" target="_blank" rel="noopener noreferrer">Contact us on Telegram</a>
+        <div class="anipastaReportHint">Contact us on Telegram</div>
       </div>
     `;
     document.body.appendChild(popup);
