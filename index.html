@@ -10,23 +10,54 @@
   <style>
     .header{position:sticky;top:0;z-index:100}
     .header .searchWrap{position:static;display:block;width:auto;max-width:none;margin:0}
-    .headerSearchToggle{width:42px;height:42px;display:grid;place-items:center;border:1px solid var(--border-2);border-radius:10px;background:var(--surface-2);color:var(--muted);flex:0 0 auto;margin-left:auto}
-    .headerSearchToggle:hover{border-color:var(--accent);background:var(--surface-3);color:var(--text)}
-    .headerSearchToggle svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+    .headerSearchToggle,.headerNavButton{height:42px;display:grid;place-items:center;border:1px solid var(--border-2);border-radius:10px;background:var(--surface-2);color:var(--muted);flex:0 0 auto}
+    .headerSearchToggle{width:42px;margin-left:auto}
+    .headerNavButton{width:42px;text-decoration:none;cursor:pointer}
+    .headerNavButton:hover,.headerSearchToggle:hover{border-color:var(--accent);background:var(--surface-3);color:var(--text)}
+    .headerNavButton.active{border-color:var(--accent);background:color-mix(in srgb,var(--accent) 12%,var(--surface-2));color:var(--text)}
+    .headerSearchToggle svg,.headerNavButton svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+    .headerActions{display:flex;align-items:center;gap:8px;margin-left:auto}
+    .headerActions .headerSearchToggle{margin-left:0}
     .headerSearchPanel{position:fixed;top:66px;left:0;right:0;z-index:99;padding:12px 24px;border-bottom:1px solid var(--border);background:rgba(10,10,10,.98);box-shadow:0 18px 35px rgba(0,0,0,.45);opacity:0;pointer-events:none;transform:translateY(-8px);transition:opacity .16s,transform .16s}
     .headerSearchPanel.show{opacity:1;pointer-events:auto;transform:translateY(0)}
     .headerSearchPanel .searchWrap{position:relative;width:100%;max-width:none;margin:0}
     .headerSearchPanel .search{height:44px;border-radius:9px}
     .headerSearchPanel .searchResults{top:52px}
-    @media(max-width:700px){.header{gap:8px}.headerSearchToggle{width:40px;height:40px}.headerSearchPanel{top:54px;padding:10px 12px}.headerSearchPanel .search{height:42px}}
+    .libraryHead{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:18px}
+    .libraryHead h2{margin:0}
+    .libraryCount{color:var(--muted);font-size:11px;font-weight:700}
+    .libraryAlphabet{display:flex;align-items:center;gap:8px;overflow-x:auto;padding:2px 0 10px;margin-bottom:12px;scrollbar-width:thin}
+    .libraryAlphabet::-webkit-scrollbar{height:5px}
+    .libraryAlphabet button{width:34px;height:34px;flex:0 0 34px;border:0;border-radius:8px;background:transparent;color:var(--accent);font-size:14px;font-weight:700;cursor:pointer}
+    .libraryAlphabet button:hover{background:var(--surface-2);color:var(--text)}
+    .libraryAlphabet button.active{background:var(--accent);color:#fff}
+    .libraryList{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));column-gap:56px;row-gap:0}
+    .libraryCol{min-width:0}
+    .libraryItem{display:flex;align-items:flex-start;gap:8px;padding:8px 0;min-width:0;border-bottom:1px solid color-mix(in srgb,var(--border) 65%,transparent)}
+    .libraryTitle{min-width:0;color:var(--accent);font-size:15px;line-height:1.45;text-decoration:none;overflow-wrap:anywhere}
+    .libraryTitle:hover{text-decoration:underline}
+    .libraryType{flex:0 0 auto;margin-top:1px;padding:2px 6px;border-radius:5px;border:1px solid var(--border-2);background:var(--surface-2);color:var(--muted);font-size:9px;font-weight:800;line-height:1.25;text-transform:uppercase;letter-spacing:.35px}
+    .libraryType.movie{border-color:rgba(245,197,24,.28);color:#f5c518;background:rgba(245,197,24,.08)}
+    .libraryEmpty{padding:28px 0;color:var(--muted);font-size:13px}
+    @media(max-width:900px){.libraryList{column-gap:28px}}
+    @media(max-width:700px){.header{gap:8px}.headerNavButton{width:40px;height:40px}.headerSearchToggle{width:40px;height:40px}.headerSearchPanel{top:54px;padding:10px 12px}.headerSearchPanel .search{height:42px}.libraryList{grid-template-columns:1fr}.libraryAlphabet{gap:6px}.libraryAlphabet button{width:32px;height:32px;flex-basis:32px}}
+    @media(max-width:440px){.headerNavButton{width:38px;height:38px}.headerNavButton svg{width:18px;height:18px}.headerSearchToggle{width:38px;height:38px}}
   </style>
 </head>
 <body>
   <header class="header">
     <button id="homeButton" class="logo" type="button" aria-label="AniPasta home"><span id="typingLogoText" class="typingLogoText"></span></button>
-    <button id="headerSearchButton" class="headerSearchToggle" type="button" aria-label="Search" title="Search" aria-expanded="false">
-      <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="6.5"></circle><path d="m16 16 5 5"></path></svg>
-    </button>
+    <div class="headerActions">
+      <button id="headerHomeButton" class="headerNavButton" type="button" aria-label="Home" title="Home">
+        <svg viewBox="0 0 24 24"><path d="M3 10.5 12 3l9 7.5"></path><path d="M5.5 9.5V21h13V9.5"></path><path d="M9.5 21v-6h5v6"></path></svg>
+      </button>
+      <button id="libraryButton" class="headerNavButton" type="button" aria-label="Library" title="Library">
+        <svg viewBox="0 0 24 24"><path d="M5 4.5h11.5A2.5 2.5 0 0 1 19 7v13H7.5A2.5 2.5 0 0 1 5 17.5Z"></path><path d="M5 4.5v13A2.5 2.5 0 0 0 7.5 20H19"></path><path d="M8.5 8h7"></path><path d="M8.5 11.5h7"></path></svg>
+      </button>
+      <button id="headerSearchButton" class="headerSearchToggle" type="button" aria-label="Search" title="Search" aria-expanded="false">
+        <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="6.5"></circle><path d="m16 16 5 5"></path></svg>
+      </button>
+    </div>
   </header>
 
   <div id="headerSearchPanel" class="headerSearchPanel" aria-hidden="true">
@@ -44,6 +75,13 @@
     <div class="sectionHead"><h2 id="heading">Latest Releases</h2></div>
     <div id="grid" class="grid"><div class="empty">Loading anime...</div></div>
   </main>
+
+  <main id="libraryPage" class="page hidden">
+    <div class="libraryHead"><div><h2>Library</h2></div><div id="libraryCount" class="libraryCount"></div></div>
+    <div id="libraryAlphabet" class="libraryAlphabet" aria-label="Library alphabet"></div>
+    <div id="libraryList" class="libraryList"></div>
+  </main>
+
   <main id="searchPage" class="page hidden"><div class="sectionHead"><h2 id="searchPageTitle">Search Results</h2></div><div id="searchGrid" class="grid"></div></main>
   <main id="historyPage" class="page hidden"><div class="sectionHead"><h2>Watch History</h2><button id="clearHistoryPage" class="clearHistoryBtn" type="button">Clear History</button></div><div id="allHistoryGrid" class="grid"></div></main>
   <main id="watchPage" class="watch hidden">
@@ -83,6 +121,7 @@
     })();
   </script>
   <script src="app.js"></script>
+  <script src="library.js"></script>
   <script src="notifications.js"></script>
   <script src="download.js"></script>
   <script src="fast-player.js"></script>
