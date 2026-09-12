@@ -62,7 +62,8 @@
         right: 8px;
         bottom: 8px;
         z-index: 99999;
-        width: min(235px, calc(100vw - 16px));
+        width: fit-content;
+        max-width: calc(100vw - 16px);
         display: flex;
         align-items: center;
         gap: 7px;
@@ -98,11 +99,11 @@
       }
       #anipastaReportPopup .anipastaReportContent {
         min-width: 0;
-        flex: 1;
+        flex: 0 0 auto;
       }
       #anipastaReportPopup .anipastaReportText {
         color: var(--text);
-        font-size: 9px;
+        font-size: 10px;
         font-weight: 700;
         line-height: 1.3;
         white-space: nowrap;
@@ -113,6 +114,7 @@
         font-size: 9px;
         font-weight: 700;
         line-height: 1.2;
+        white-space: nowrap;
         text-decoration: none;
       }
       #anipastaReportPopup .anipastaReportHint:hover {
@@ -122,7 +124,8 @@
         #anipastaReportPopup {
           right: 7px;
           bottom: 7px;
-          width: min(225px, calc(100vw - 14px));
+          width: fit-content;
+          max-width: calc(100vw - 14px);
           padding: 7px;
         }
       }
