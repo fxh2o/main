@@ -37,7 +37,6 @@
       .headerActions .headerNavButton { display: none !important; }
       .headerActions .headerSearchToggle { margin-left: 0 !important; }
       .headerActions .anipastaNotificationWrap { display: block !important; }
-      #grid.anipastaLatestMetaPending .card { visibility: hidden !important; }
       @media (max-width: 640px) { .headerCenterNav { gap: 12px !important; } .headerCenterNav .headerNavButton { font-size: 12px !important; } }
       @media (max-width: 440px) { .headerCenterNav { gap: 10px !important; } .headerCenterNav .headerNavButton { font-size: 11px !important; } }
     `;
@@ -71,18 +70,6 @@
     moveNotificationToActions();
     const observer = new MutationObserver(moveNotificationToActions);
     observer.observe(header, { childList: true, subtree: true });
-  }
-
-  function syncHomeLatestMetaVisibility() {
-    const grid = $('grid');
-    if (!grid) return;
-    const cards = [...grid.querySelectorAll('.card')];
-    if (!cards.length) {
-      grid.classList.remove('anipastaLatestMetaPending');
-      return;
-    }
-    const ready = cards.every(card => !!card.querySelector('.releaseMeta'));
-    grid.classList.toggle('anipastaLatestMetaPending', !ready);
   }
 
   function hideLibrary() {
@@ -195,7 +182,6 @@
   });
 
   document.addEventListener('anipasta:cards-rendered', () => {
-    syncHomeLatestMetaVisibility();
     if (!page.classList.contains('hidden') && libraryActivated) renderLibrary();
   });
 
@@ -212,5 +198,4 @@
   injectHeaderNavStyles();
   setupHeaderNavigation();
   hideLibrary();
-  requestAnimationFrame(syncHomeLatestMetaVisibility);
 })();
