@@ -47,7 +47,16 @@ function hideLoader(){const loader=$('anipastaLoader');if(!loader)return;clearTi
 function emitCardsRendered(){document.dispatchEvent(new CustomEvent('anipasta:cards-rendered'));}
 function historyCard(item){const anime=item.anime,isMovie=anime.content_type==='movie',meta=isMovie?'Movie':`<span>S${item.seasonNumber||1}</span><span class="dot"></span><span>E${item.episodeNumber||''}</span>`;return `<article class="card historyCard" data-history-id="${esc(anime.id)}"><div class="poster">${anime.poster_url?`<img src="${esc(anime.poster_url)}" loading="lazy" alt="">`:''}<div class="poster-overlay"></div><span class="historyMeta">${meta}</span><button class="historyDelete" type="button" data-delete-history-id="${esc(anime.id)}" aria-label="Remove ${esc(anime.title)} from watch history" title="Remove from history">&times;</button></div><div class="title" title="${esc(anime.title)}">${esc(anime.title)}</div></article>`;}
 function renderHistory(){const section=$('historySection'),allGrid=$('allHistoryGrid');if(!section||!allGrid)return;const items=historyItems();if(!items.length){section.classList.add('hidden');$('historyGrid').innerHTML='';$('viewAllHistory').classList.add('hidden');allGrid.innerHTML='';return;}section.classList.remove('hidden');$('historyGrid').innerHTML=items.slice(0,6).map(historyCard).join('');$('viewAllHistory').classList.toggle('hidden',items.length<=6);if(state.view==='history'){$('historyPage').querySelector('h2').textContent='Watch History';$('clearHistoryPage').classList.remove('hidden');allGrid.innerHTML=items.map(historyCard).join('');}emitCardsRendered();}
-function closeSearch(){$('searchResults')?.classList.add('hidden');}
+function closeSearch(){
+  $('searchResults')?.classList.add('hidden');
+  const panel=$('headerSearchPanel');
+  if(panel){
+    panel.classList.remove('show');
+    panel.setAttribute('aria-hidden','true');
+    panel.setAttribute('inert','');
+    $('headerSearchButton')?.setAttribute('aria-expanded','false');
+  }
+}
 function normalizeSearchQuery(value){return String(value??'').toLowerCase().normalize('NFKD').replace(/[^\p{L}\p{N}]+/gu,'');}
 function getSearchResults(query){const normalized=normalizeSearchQuery(query);if(!normalized)return[];return state.anime.filter(anime=>normalizeSearchQuery(anime.title).includes(normalized));}
 function showSearch(query){const box=$('searchResults');if(!box)return;const results=getSearchResults(query);if(!normalizeSearchQuery(query)){closeSearch();return;}box.innerHTML=results.length?results.slice(0,5).map(anime=>`<button class="result" type="button" data-id="${esc(anime.id)}">${anime.poster_url?`<img src="${esc(anime.poster_url)}" alt="">`:''}<span class="resultInfo"><span class="resultTitle">${esc(anime.title)}</span></span></button>`).join(''):'<div class="resultEmpty">No results found</div>';box.classList.remove('hidden');}
