@@ -67,7 +67,7 @@
     </div>
   </header>
 
-  <div id="headerSearchPanel" class="headerSearchPanel" aria-hidden="true">
+  <div id="headerSearchPanel" class="headerSearchPanel" aria-hidden="true" inert>
     <div class="searchWrap">
       <input id="search" class="search" type="search" placeholder="Search anime..." aria-label="Search anime" autocomplete="off">
       <div id="searchResults" class="searchResults hidden"></div>
@@ -81,7 +81,7 @@
       <div id="historyGrid" class="historyGrid"></div>
     </section>
     <div class="sectionHead"><h2 id="heading">Latest Releases</h2></div>
-    <div id="grid" class="grid skeletonGrid" aria-label="Loading anime"><div class="skeletonCard"><span class="skeletonPoster"></span><span class="skeletonLine"></span></div><div class="skeletonCard"><span class="skeletonPoster"></span><span class="skeletonLine"></span></div><div class="skeletonCard"><span class="skeletonPoster"></span><span class="skeletonLine"></span></div><div class="skeletonCard"><span class="skeletonPoster"></span><span class="skeletonLine"></span></div><div class="skeletonCard"><span class="skeletonPoster"></span><span class="skeletonLine"></span></div><div class="skeletonCard"><span class="skeletonPoster"></span><span class="skeletonLine"></span></div></div>
+    <div id="grid" class="grid skeletonGrid"><div class="skeletonCard"><span class="skeletonPoster"></span><span class="skeletonLine"></span></div><div class="skeletonCard"><span class="skeletonPoster"></span><span class="skeletonLine"></span></div><div class="skeletonCard"><span class="skeletonPoster"></span><span class="skeletonLine"></span></div><div class="skeletonCard"><span class="skeletonPoster"></span><span class="skeletonLine"></span></div><div class="skeletonCard"><span class="skeletonPoster"></span><span class="skeletonLine"></span></div><div class="skeletonCard"><span class="skeletonPoster"></span><span class="skeletonLine"></span></div></div>
   </main>
 
   <main id="libraryPage" class="page hidden">
@@ -142,6 +142,7 @@
         if(!searchPanel||!searchButton)return;
         searchPanel.classList.remove('show');
         searchPanel.setAttribute('aria-hidden','true');
+        searchPanel.setAttribute('inert','');
         searchButton.setAttribute('aria-expanded','false');
       };
       const closeNotificationPanel=()=>document.getElementById('notificationPanel')?.classList.remove('show');
@@ -152,6 +153,7 @@
           const opening=!searchPanel.classList.contains('show');
           searchPanel.classList.toggle('show',opening);
           searchPanel.setAttribute('aria-hidden',opening?'false':'true');
+          if(opening) searchPanel.removeAttribute('inert'); else searchPanel.setAttribute('inert','');
           searchButton.setAttribute('aria-expanded',opening?'true':'false');
           if(opening) requestAnimationFrame(()=>searchInput?.focus());
         });
